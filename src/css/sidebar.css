@@ -1,0 +1,11 @@
+@import './globalCssVariables.css';
+
+.sidebar {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%; 
+    width: 20%;
+    background-color: var(--sidebar);
+    color: var(--text);
+  }
