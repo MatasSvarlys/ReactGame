@@ -1,7 +1,7 @@
 import '../css/mapDisplay.css'
 import React, { useState, useEffect } from 'react';
 import Node from './node'
-import PolygonVisualTesting from './polygonVisualTesting';
+// import PolygonVisualTesting from './polygonVisualTesting';
 
 export default function MapDisplay({nodes, polygons}){
     const [displayedNodes, setDisplayedNodes] = useState([]);
