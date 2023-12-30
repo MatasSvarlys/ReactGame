@@ -26,8 +26,9 @@ export default function Node({ type, name, position, setActiveTooltip, activeToo
       style={style}
       data-name={name}
       onClick={handleNodeClick}
+      id={id}
     >
-      <span>●</span>
+      {/* <span>●</span> */}
     </div>
   );
   
