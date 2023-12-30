@@ -28,7 +28,6 @@ export default function Node({ type, name, position, setActiveTooltip, activeToo
       onClick={handleNodeClick}
       id={id}
     >
-      {/* <span>●</span> */}
     </div>
   );
   

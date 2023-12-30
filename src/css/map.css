@@ -1,9 +1,7 @@
 @import './globalCssVariables.css';
 
-.map{
-    /* z-index: 3; */
+.content{
     position: absolute;
-    /* background-color: var(--map-bg); */
     background-color: burlywood;
     color: var(--text);
     height: 100%;
@@ -11,14 +9,4 @@
 }
 button{
     position: absolute;
-}
-.map-display{
-    border-style: outset;
-    border-color: gray;
-    position: absolute;
-    height: 90%;
-    width: 90%;
-    top: 5%;
-    left: 5%;
-    background-color: darkgray;
 }

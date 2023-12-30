@@ -5,7 +5,10 @@ import '../css/map.css'
 export default function Map(){
   const [nodes, setNodes] = useState([]);
   const [paths, setPaths] = useState([]);
-  //these are in [x, y] from top left
+
+  const mapSize = [1000, 1000];
+
+  //these are in [x%, y%] from top left
   const top1poly = [[0, 0], [40, 0], [0, 40]];
   const top2poly = [[40, 0], [80, 0], [0, 80], [0, 40]];
   const midpoly = [[80, 0], [100, 0], [100, 20], [20, 100], [0, 100], [0, 80]];
@@ -16,7 +19,6 @@ export default function Map(){
   useEffect(() => {
     //take out the nodes from storage when you load up a page again
     const storedNodes = JSON.parse(localStorage.getItem('mapNodes')) || [];
-    // localStorage.removeItem('mapNodes');
     setNodes(storedNodes);
   }, []); 
 
@@ -55,11 +57,9 @@ export default function Map(){
   };  
 
   return (
-    <div className="map">
+    <div className="content">
         <button onClick={initRandomMap}>randomize map</button>
-        <div className='map-display'>
-            <MapDisplay nodes={nodes} paths={paths} polygons={[top1poly, top2poly, midpoly, bot1poly, bot2poly]}/>
-        </div>
+        <MapDisplay nodes={nodes} paths={paths} mapSize={mapSize}/>
     </div>
   );
 };

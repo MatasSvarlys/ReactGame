@@ -27,3 +27,30 @@
     background-color: blue;
     clip-path: polygon(100% 60%, 60% 100%, 100% 100%);
 }
+
+.map-display-container{
+    border-style: outset;
+    border-color: gray;
+    position: absolute;
+    height: 90%;
+    width: 90%;
+    top: 5%;
+    left: 5%;
+    background-color: darkgray;
+    overflow: auto;
+}
+
+.map-display-container::-webkit-scrollbar {
+    width: 2px;
+    height: 2px;
+}
+  
+.map-display-container::-webkit-scrollbar-thumb {
+    background-color: black;
+    border-radius: 6px; 
+}
+
+.map-display-container::-webkit-scrollbar-track {
+    background-color: darkgray; 
+}
+  
