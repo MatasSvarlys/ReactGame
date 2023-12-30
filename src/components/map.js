@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import MapDisplay from './mapDisplay';
 import '../css/map.css'
+const mapSize = [1000, 1000];
 
 export default function Map(){
   const [nodes, setNodes] = useState([]);
   const [paths, setPaths] = useState([]);
 
-  const mapSize = [1000, 1000];
 
   //these are in [x%, y%] from top left
-  const top1poly = [[0, 0], [40, 0], [0, 40]];
-  const top2poly = [[40, 0], [80, 0], [0, 80], [0, 40]];
-  const midpoly = [[80, 0], [100, 0], [100, 20], [20, 100], [0, 100], [0, 80]];
-  const bot1poly = [[100, 20], [100, 60], [60, 100], [20, 100]];
-  const bot2poly = [[100, 60], [60, 100], [100, 100]];
+  const top1poly = [[0, 0], [40, 0], [0, 40]].map(coords => percentToPixels(coords, mapSize));
+  const top2poly = [[40, 0], [80, 0], [0, 80], [0, 40]].map(coords => percentToPixels(coords, mapSize));
+  const midpoly = [[80, 0], [100, 0], [100, 20], [20, 100], [0, 100], [0, 80]].map(coords => percentToPixels(coords, mapSize));
+  const bot1poly = [[100, 20], [100, 60], [60, 100], [20, 100]].map(coords => percentToPixels(coords, mapSize));
+  const bot2poly = [[100, 60], [60, 100], [100, 100]].map(coords => percentToPixels(coords, mapSize));
   
   
   useEffect(() => {
@@ -48,10 +48,9 @@ export default function Map(){
 
     const newNodes = [...topTownNodes, ...botTownNodes, ...topForestNodes, ...botForestNodes, ...templeNodes];
     const newPaths = [...topTownPaths, ...botTownPaths];
-    // console.log(newPaths);
-    // localStorage.removeItem('mapNodes');
+
     localStorage.setItem('mapNodes', JSON.stringify(newNodes));
-    // localStorage.setItem('paths', JSON.stringify(newPaths));
+    localStorage.setItem('paths', JSON.stringify(newPaths));
     setPaths(newPaths);
     setNodes(newNodes);
   };  
@@ -76,7 +75,7 @@ const createRandomNodes = (type, minCount, maxCount, polygon) => {
 
   const count = Math.floor(Math.random() * (maxCount - minCount + 1)) + minCount;
   const nodes = [];
-  const marginPercent = 3;
+  const marginPx = 20;
 
   for (let i = 1; i <= count; i++) {
     const name = `${type} ${i}`;
@@ -84,11 +83,10 @@ const createRandomNodes = (type, minCount, maxCount, polygon) => {
     let top, left;
     // Generate random positions within the specified polygon
     do {
-      top = `${Math.random() * (100 - marginPercent)}%`;
-      left = `${Math.random() * (100 - marginPercent)}%`;
+      top = `${Math.random() * (mapSize[0] - marginPx)}px`;
+      left = `${Math.random() * (mapSize[1] - marginPx)}px`;
     } while (!insidePoly([parseFloat(left), parseFloat(top)], polygon));
-    // console.log(name, id);
-    // console.log(top, left);
+
     const color = getNodeColor(type);
 
     nodes.push({ type, name, position: { top, left }, color, id});
@@ -96,7 +94,6 @@ const createRandomNodes = (type, minCount, maxCount, polygon) => {
 
   return nodes;
 };
-
 const getNodeColor = type => {
   switch (type) {
     case 'Town':
@@ -110,6 +107,16 @@ const getNodeColor = type => {
   }
 };
 
+
+function percentToPixels(coords, mapSize) {
+  const [mapWidth, mapHeight] = mapSize;
+  const [percentX, percentY] = coords;
+
+  const pixelX = (percentX / 100) * mapWidth;
+  const pixelY = (percentY / 100) * mapHeight;
+
+  return [pixelX, pixelY];
+}
 
 function insidePoly(point, polygon) {
   // ray-casting algorithm based on
