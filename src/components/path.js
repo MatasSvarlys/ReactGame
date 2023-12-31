@@ -4,43 +4,36 @@ export default function Path({path: {end, start}}) {
   const pathRef = useRef(null);
 
   useEffect(() => {
-    console.log("start node pos", start, "\nend node pos", end);
     const updatePath = () => {
       const pathElement = pathRef.current;
-
+      
+      const nodeSize = [20, 20];
       const startX = parseFloat(start.position.left);
       const startY = parseFloat(start.position.top);
       const endX = parseFloat(end.position.left);
       const endY = parseFloat(end.position.top);
       
+      console.log("start node pos", startX, startY, "\nend node pos", endX, endY, "\npath ref", pathElement);
       // Calculate midpoint
-      const midX = (startX + endX) / 2;
-      const midY = (startY + endY) / 2;
+      const midX = ((startX + endX) / 2) + nodeSize[0]/2;
+      const midY = ((startY + endY) / 2) + nodeSize[1]/2;
       
       // Calculate distance between points
       const distance = Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2));
       
-      // Calculate angle in degrees
-      const angleDegrees = Math.atan2(endY - startY, endX - startX);
+      const angleRadians = Math.atan2(endY - startY, endX - startX);
       
       // Set styles
-      pathElement.style.width = `${distance}%`; // You might want to use pixels or adjust accordingly
-      pathElement.style.transform = `rotate(${angleDegrees}rad)`;
-      pathElement.style.left = `${midX}%`;
-      pathElement.style.top = `${midY}%`;
+      pathElement.style.width = `${distance}px`;
+      pathElement.style.transform = `rotate(${angleRadians}rad)`;
+      pathElement.style.left = `${midX - distance/2}px`;
+      pathElement.style.top = `${midY}px`;
       
     };
 
-    // Call the update function initially and whenever start or end change
+
     updatePath();
 
-    // Attach resize event listener to recalculate on window resize
-    window.addEventListener('resize', updatePath);
-
-    // Cleanup the event listener on component unmount
-    return () => {
-      window.removeEventListener('resize', updatePath);
-    };
   }, [start, end]);
 
   return <div ref={pathRef} className="path"></div>;

@@ -19,6 +19,8 @@ export default function Map(){
   useEffect(() => {
     //take out the nodes from storage when you load up a page again
     const storedNodes = JSON.parse(localStorage.getItem('mapNodes')) || [];
+    const storedPaths = JSON.parse(localStorage.getItem('paths')) || [];
+    setPaths(storedPaths);
     setNodes(storedNodes);
   }, []); 
 
@@ -40,14 +42,21 @@ export default function Map(){
     
     const topTownNodes = createRandomNodes('Town', minTowns, maxTowns, top1poly);
     const topTownPaths = generatePaths(getNodeIds(topTownNodes), topTownNodes);
+
     const botTownNodes = createRandomNodes('Town', minTowns, maxTowns, bot2poly);
     const botTownPaths = generatePaths(getNodeIds(botTownNodes), botTownNodes);
-    const topForestNodes = createRandomNodes('Forest', minForests, maxForests, top2poly)
+
+    const topForestNodes = createRandomNodes('Forest', minForests, maxForests, top2poly);
+    const topForestPaths = generatePaths(getNodeIds(topForestNodes), topForestNodes);
+
     const botForestNodes = createRandomNodes('Forest', minForests, maxForests, bot1poly);
+    const botForestPaths = generatePaths(getNodeIds(botForestNodes), botForestNodes);
+
     const templeNodes = createRandomNodes('Temple', minTemples, maxTemples, midpoly);
+    const templePaths = generatePaths(getNodeIds(templeNodes), templeNodes);
 
     const newNodes = [...topTownNodes, ...botTownNodes, ...topForestNodes, ...botForestNodes, ...templeNodes];
-    const newPaths = [...topTownPaths, ...botTownPaths];
+    const newPaths = [...topTownPaths, ...botTownPaths, ...topForestPaths, ...botForestPaths, ...templePaths];
 
     localStorage.setItem('mapNodes', JSON.stringify(newNodes));
     localStorage.setItem('paths', JSON.stringify(newPaths));
@@ -83,8 +92,8 @@ const createRandomNodes = (type, minCount, maxCount, polygon) => {
     let top, left;
     // Generate random positions within the specified polygon
     do {
-      top = `${Math.random() * (mapSize[0] - marginPx)}px`;
-      left = `${Math.random() * (mapSize[1] - marginPx)}px`;
+      top = `${Math.trunc(Math.random() * (mapSize[0] - marginPx), 2)}px`;
+      left = `${Math.trunc(Math.random() * (mapSize[1] - marginPx), 2)}px`;
     } while (!insidePoly([parseFloat(left), parseFloat(top)], polygon));
 
     const color = getNodeColor(type);
@@ -183,6 +192,6 @@ const generatePaths = (nodeIds, nodes) => {
     },
   }));
 
-  console.log('Generated paths: ', pathsWithNodes);
+  // console.log('Generated paths: ', pathsWithNodes);
   return pathsWithNodes;
 };

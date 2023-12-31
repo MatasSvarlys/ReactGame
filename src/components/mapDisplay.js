@@ -17,17 +17,14 @@ export default function MapDisplay({nodes, paths, mapSize}){
         setDisplayedNodes(nodes);
         setDisplayedPaths(paths);
         setActiveTooltip(null);
-        if (mapDisplayRef.current) {
-            console.log("mapDisplayRef.current is available:", mapDisplayRef.current);
-        }
     }, [nodes, paths]);
 
     return(
         <ScrollDrag ref={mapDisplayRef} rootClass="map-display-container">
             <div className='map' style={{height: mapSize[0], width: mapSize[1]}}>
-                {/* {{displayedPaths.map((path) => (
+                {displayedPaths.map((path) => (
                     <Path path={path}/>
-                ))} */}
+                ))}
                 {displayedNodes.map((node) => (
                     <Node
                         key={node.id}
