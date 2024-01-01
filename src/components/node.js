@@ -3,7 +3,8 @@ import '../css/node.css';
 
 export default function Node({ type, name, position, setActiveTooltip, activeTooltip, id}) {
   if (!position) {
-    throw new Error("one of the coordinates is undefined in node " + name);
+    console.error("one of the coordinates is undefined in node " + name);
+    return;
   }
 
   const handleNodeClick = () => {

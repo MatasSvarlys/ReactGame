@@ -1,6 +1,6 @@
 .path {
     position: absolute;
-    height: 2px; /* Set to the desired thickness of the path */
+    height: 3px; /* Set to the desired thickness of the path */
     background-color: blanchedalmond; /* Set to the desired color of the path */
 }
 

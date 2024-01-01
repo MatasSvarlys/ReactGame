@@ -17,7 +17,7 @@ export default function Map(){
   
   
   useEffect(() => {
-    //take out the nodes from storage when you load up a page again
+    //take out the nodes and paths from storage when you load up a page again
     const storedNodes = JSON.parse(localStorage.getItem('mapNodes')) || [];
     const storedPaths = JSON.parse(localStorage.getItem('paths')) || [];
     setPaths(storedPaths);
@@ -27,11 +27,6 @@ export default function Map(){
   const initRandomMap = () => {
     iteratorObject.value = 0;
     
-    const getNodeIds = (nodes) => {
-      const nodeIds = nodes.map(node => node.id);
-      return nodeIds;
-    }
-    //ugh im mad [...createRandomNodes('Town', 3, 5, top1poly), ...createRandomNodes('Town', 3, 5, bot2poly)] doesnt work because position doesnt get passed on
     const minTowns = 1;
     const maxTowns = 3;
     const minForests = 3;
@@ -40,28 +35,22 @@ export default function Map(){
     const maxTemples = 5;
     
     
-    const topTownNodes = createRandomNodes('Town', minTowns, maxTowns, top1poly);
-    const topTownPaths = generatePaths(getNodeIds(topTownNodes), topTownNodes);
-
+    const topTownNodes = createRandomNodes('Town', minTowns, maxTowns, top1poly); 
     const botTownNodes = createRandomNodes('Town', minTowns, maxTowns, bot2poly);
-    const botTownPaths = generatePaths(getNodeIds(botTownNodes), botTownNodes);
-
-    const topForestNodes = createRandomNodes('Forest', minForests, maxForests, top2poly);
-    const topForestPaths = generatePaths(getNodeIds(topForestNodes), topForestNodes);
-
+    const topForestNodes = createRandomNodes('Forest', minForests, maxForests, top2poly); 
     const botForestNodes = createRandomNodes('Forest', minForests, maxForests, bot1poly);
-    const botForestPaths = generatePaths(getNodeIds(botForestNodes), botForestNodes);
-
     const templeNodes = createRandomNodes('Temple', minTemples, maxTemples, midpoly);
-    const templePaths = generatePaths(getNodeIds(templeNodes), templeNodes);
 
-    const newNodes = [...topTownNodes, ...botTownNodes, ...topForestNodes, ...botForestNodes, ...templeNodes];
-    const newPaths = [...topTownPaths, ...botTownPaths, ...topForestPaths, ...botForestPaths, ...templePaths];
+    //make sure these are in order from where to where they go to
+    const newNodes = [[...topTownNodes], [...topForestNodes], [...templeNodes], [...botForestNodes], [...botTownNodes]];
+    // console.log("not concated", newNodes);
+    // console.log("concated nodes", newNodes.flat());
+    const allPaths = generateRandomPaths(newNodes);
 
-    localStorage.setItem('mapNodes', JSON.stringify(newNodes));
-    localStorage.setItem('paths', JSON.stringify(newPaths));
-    setPaths(newPaths);
-    setNodes(newNodes);
+    localStorage.setItem('mapNodes', JSON.stringify(newNodes.flat()));
+    localStorage.setItem('paths', JSON.stringify(allPaths));
+    setPaths(allPaths);
+    setNodes(newNodes.flat());
   };  
 
   return (
@@ -103,6 +92,7 @@ const createRandomNodes = (type, minCount, maxCount, polygon) => {
 
   return nodes;
 };
+
 const getNodeColor = type => {
   switch (type) {
     case 'Town':
@@ -146,52 +136,68 @@ function insidePoly(point, polygon) {
   return inside;
 };
 
-
-const generatePaths = (nodeIds, nodes) => {
-  if(!nodeIds || !nodes){
-    console.error("couldnt generate paths because there were no ids or nodes");
-    return;
-  }
-  let used = [];
-  let unused = [...nodeIds];
-  let paths = [];
-
-  const pickRandomAndMoveToUsed = () => {
-    if (unused.length > 0) {
-      const randomIndex = Math.floor(Math.random() * unused.length);
-      const randomId = unused.splice(randomIndex, 1)[0];
-      used.push(randomId);
-      return randomId;
+const generateRandomPaths = (sectionsArr) => {
+  const pickRandomNode = (nodes) => {
+    if (nodes.length > 0) {
+      const randomIndex = Math.floor(Math.random() * nodes.length);
+      return nodes[randomIndex];
+    } else {
+      console.error("No more nodes to pick from");
+      return null;
     }
-  };
-
-  const pickRandomFromUsed = () => {
-    if (used.length > 0) {
-      const randomIndex = Math.floor(Math.random() * used.length);
-      const randomId = used.splice(randomIndex, 1)[0];
-      return randomId;
-    }
-  };
-
-  const generatePath = () => {
-    return [pickRandomFromUsed(), pickRandomAndMoveToUsed()];
-  };
-
-  pickRandomAndMoveToUsed();
-  while (unused.length > 0) {
-    paths.push(generatePath());
   }
 
-  // Enhance paths to include node positions or IDs
-  const pathsWithNodes = paths.map(path => ({
-    start: {
-      position: nodes.find(node => node.id === path[0]).position,
-    },
-    end: {
-      position: nodes.find(node => node.id === path[1]).position,
-    },
-  }));
+  const generatePathFromTwoNodes = (node1, node2) =>{
+    // console.log(node1.position, node2.position);
+    return({
+      start: {
+        position: node1.position,
+      },
+      end: {
+        position: node2.position,
+      },
+    });
+  }
 
-  // console.log('Generated paths: ', pathsWithNodes);
-  return pathsWithNodes;
-};
+  const generatePathsInSection = (section) => {
+    let used = [];
+    let unused = [...section];
+    let generatedPaths = [];
+    
+    const pickOutNode = (givenNode) => {
+      used.push(givenNode);
+      unused = unused.filter(node => node !== givenNode);
+      return givenNode;
+    }
+
+    //seed the first node
+    pickOutNode(pickRandomNode(unused));
+    
+    //generate paths
+    while(unused.length > 0){
+      generatedPaths.push(
+        generatePathFromTwoNodes(pickRandomNode(used), pickOutNode(pickRandomNode(unused)))
+        );
+    }
+
+    return generatedPaths;
+  }
+
+  const generatePathsBetweenSections = (section1, section2) =>{
+    //probably should add a way to pick how may paths between the sections but it works for now
+    return [
+      generatePathFromTwoNodes(pickRandomNode(section1), pickRandomNode(section2)), 
+      generatePathFromTwoNodes(pickRandomNode(section1), pickRandomNode(section2))
+    ];
+  }
+
+  const sectionPaths = sectionsArr.map(section => generatePathsInSection(section));
+
+  let pathsBetweenSections = [];
+  for(let i = 0; i < sectionsArr.length - 1; i++)
+    pathsBetweenSections.push(generatePathsBetweenSections(sectionsArr[i], sectionsArr[i+1]));
+
+  // console.log(pathsBetweenSections.flat());
+
+  return [...sectionPaths.flat(), ...pathsBetweenSections.flat()];
+}
