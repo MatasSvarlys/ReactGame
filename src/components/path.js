@@ -5,6 +5,8 @@ export default function Path({path: {end, start}}) {
 
   useEffect(() => {
     const updatePath = () => {
+    //TODO: make sure that paths get displayed correctly no matter the zoom scale
+
       const pathElement = pathRef.current;
       
       const nodeSize = [20, 20];

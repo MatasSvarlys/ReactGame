@@ -12,6 +12,16 @@ class ScrollDrag extends React.Component {
       scrollY: 0,
     };
   }
+  
+  componentDidMount() {
+    document.addEventListener('mousemove', this.onMouseMove);
+    document.addEventListener('mouseup', this.onMouseUp);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('mousemove', this.onMouseMove);
+    document.removeEventListener('mouseup', this.onMouseUp);
+  }
 
   onMouseDown = (e) => {
     this.setState({
@@ -60,6 +70,7 @@ class ScrollDrag extends React.Component {
         {React.Children.map(this.props.children, (child) =>
           React.cloneElement(child, {
             style: { ...child.props.style, position: 'relative' },
+            onMouseUp: this.onMouseUp,
           })
         )}
       </div>

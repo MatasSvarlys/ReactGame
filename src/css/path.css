@@ -1,8 +1,7 @@
 .path {
-    position: relative;
+    position: absolute;
     height: 2px; /* Set to the desired thickness of the path */
     background-color: blanchedalmond; /* Set to the desired color of the path */
-    transform-origin: center;
 }
 
 .path:hover{
