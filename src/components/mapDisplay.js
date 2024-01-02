@@ -9,7 +9,7 @@ export default function MapDisplay({nodes, paths, mapSize}){
     const [activeTooltip, setActiveTooltip] = useState(null);
     const [displayedPaths, setDisplayedPaths] = useState([]);
     const mapDisplayRef = useRef(null);
-
+    const [currentPos, setPos] = useState("id_1"); 
 
     useEffect(() => {
         //update the displayed nodes whenever nodes change
@@ -20,7 +20,7 @@ export default function MapDisplay({nodes, paths, mapSize}){
 
     return(
         <ScrollDrag ref={mapDisplayRef} rootClass="map-display-container">
-            <div className='map' style={{height: mapSize[0], width: mapSize[1], }}>
+            <div className='map' style={{height: mapSize[0], width: mapSize[1]}}>
                 {displayedPaths.map((path, index) => (
                     <Path 
                         key={index} 
@@ -36,6 +36,7 @@ export default function MapDisplay({nodes, paths, mapSize}){
                         setActiveTooltip={setActiveTooltip}
                         activeTooltip={activeTooltip}
                         id={node.id}
+                        currentPos={currentPos}
                     />
                 ))}
             </div>

@@ -49,3 +49,14 @@
 .node-tooltip.active::after {
   display: block;
 }
+
+.selectedNode {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border-style: solid;
+  border-color: red;
+  position: inherit;
+  align-items: center;
+  justify-content: center;
+}

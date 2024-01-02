@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import MapDisplay from './mapDisplay';
 import '../css/map.css'
-const mapSize = [1000, 1000];
+const mapSize = [500, 500];
 
 export default function Map(){
   const [nodes, setNodes] = useState([]);

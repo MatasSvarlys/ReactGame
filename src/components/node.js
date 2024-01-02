@@ -1,7 +1,7 @@
 // import React, { useState } from 'react';
 import '../css/node.css';
 
-export default function Node({ type, name, position, setActiveTooltip, activeTooltip, id}) {
+export default function Node({ type, name, position, setActiveTooltip, activeTooltip, id, currentPos}) {
   if (!position) {
     console.error("one of the coordinates is undefined in node " + name);
     return;
@@ -23,12 +23,13 @@ export default function Node({ type, name, position, setActiveTooltip, activeToo
 
   return (
     <div
-      className={`node ${type.toLowerCase()} ${activeTooltip === id ? 'node-tooltip active' : ''}`}
-      style={style}
-      data-name={name}
-      onClick={handleNodeClick}
-      id={id}
-    >
+        className={`node ${type.toLowerCase()} ${activeTooltip === id ? 'node-tooltip active' : ''}`}
+        style={style}
+        data-name={name}
+        onClick={handleNodeClick}
+        id={id}
+      >
+      <div className={currentPos === id ? 'selectedNode' : ''}></div>
     </div>
   );
   
