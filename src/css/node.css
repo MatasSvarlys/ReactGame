@@ -7,7 +7,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: transparent;
     background-color: black; 
   }
 
@@ -27,28 +26,33 @@
     filter: brightness(150%);
     cursor: pointer;
   }
-  
-  .node-tooltip::after {
-    font-size: 0.8em;
-    content: attr(data-name);
-    position: absolute;
+    
+  .tooltip{
+    font-size: 0.7rem;
+    transform: translateX(-50%) translateX(10px);
     background-color: rgba(0, 0, 0, 0.8);
-    color: #fff;
+    color: white;
     padding: 5px;
-    border-radius: 5px;
-    top: -40px;
-    left: 50%;
-    transform: translateX(-50%);
-    white-space: nowrap;
   }
   
-  .node-tooltip.active::after {
-    display: block;
+  .tooltip.hasButton{
+    transform: translateX(-50%) translateX(10px) translateY(-20px);
   }
 
-.node-tooltip.active::after {
-  display: block;
-}
+  .button {
+    padding: 0px 5px;
+    font-size: 16px;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    border-radius: 5px;
+    transition:  0.3s;
+  }
+  
+  .button:hover {
+    background-color: #4c0e38;
+    color: white;
+  }
 
 .selectedNode {
   width: 30px;

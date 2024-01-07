@@ -10,13 +10,28 @@ export default function MapDisplay({nodes, paths, mapSize}){
     const [displayedPaths, setDisplayedPaths] = useState([]);
     const mapDisplayRef = useRef(null);
     const [currentPos, setPos] = useState("id_1"); 
+    const [connectedNodes, setConnectedNodes] = useState([]);
+
 
     useEffect(() => {
-        //update the displayed nodes whenever nodes change
+        //update the display whenever nodes or paths change
         setDisplayedNodes(nodes);
         setDisplayedPaths(paths);
         setActiveTooltip(null);
     }, [nodes, paths]);
+
+    useEffect(() => {
+        // Update connectedNodes whenever paths change
+        const newConnectedNodes = paths.reduce((acc, path) => {
+            if(path.start.connectsTo === currentPos)
+                acc.push(path.end.connectsTo);
+            else if (path.end.connectsTo === currentPos)
+                acc.push(path.start.connectsTo);
+            return acc;
+        }, []);
+    
+        setConnectedNodes(newConnectedNodes);
+      }, [paths, currentPos]);    
 
     return(
         <ScrollDrag ref={mapDisplayRef} rootClass="map-display-container">
@@ -37,6 +52,8 @@ export default function MapDisplay({nodes, paths, mapSize}){
                         activeTooltip={activeTooltip}
                         id={node.id}
                         currentPos={currentPos}
+                        setPos={setPos}
+                        isConnected={connectedNodes.includes(node.id)}
                     />
                 ))}
             </div>

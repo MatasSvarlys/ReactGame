@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import '../css/path.css'
 
 
-export default function Path({path: {end, start}}) {
+export default function Path({path: {start, end}}) {
   const pathRef = useRef(null);
   useEffect(() => {
     const updatePath = () => {

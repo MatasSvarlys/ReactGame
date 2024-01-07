@@ -152,9 +152,11 @@ const generateRandomPaths = (sectionsArr) => {
     return({
       start: {
         position: node1.position,
+        connectsTo: node2.id,
       },
       end: {
         position: node2.position,
+        connectsTo: node1.id,
       },
     });
   }
